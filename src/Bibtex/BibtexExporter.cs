@@ -28,5 +28,24 @@ namespace ScientificReviews.Bibtex
             }
             return ret;
         }
+
+        public string[] GetDois(BibtexEntry[] entries)
+        {
+            List<string> ret = new List<string>();
+            foreach (var entry in entries)
+            {
+                string doi = entry.GetTagValue("doi");
+                if (doi != null)
+                {
+                    ret.Add(doi);
+                }
+                else
+                {
+
+                }
+            }
+            return ret.ToArray();
+        }
+
     }
 }

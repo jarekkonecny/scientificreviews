@@ -13,7 +13,7 @@ namespace ScientificReviews.Bibtex
         public string Key { get; set; }
         public BibtexTag[] Tags { get; set; }
 
-        public string GetTagKey (string key)
+        public string GetTagValue (string key)
         {
             if (Tags == null || Tags.Length == 0)
                 return null;
@@ -23,6 +23,21 @@ namespace ScientificReviews.Bibtex
                 {
                     if (tag.Key == key)
                         return tag.Value;
+                }
+                return null;
+            }
+        }
+
+        public BibtexTag GetTag(string key)
+        {
+            if (Tags == null || Tags.Length == 0)
+                return null;
+            else
+            {
+                foreach (var tag in Tags)
+                {
+                    if (tag.Key == key)
+                        return tag;
                 }
                 return null;
             }
@@ -46,6 +61,16 @@ namespace ScientificReviews.Bibtex
 
     public class BibtexTag
     {
+        public BibtexTag()
+        {
+                
+        }
+
+        public BibtexTag(string key, string value)
+        {
+            Key = key;
+            Value = value;
+        }
         public string Key { get; set; }
         public string Value { get; set; }
     }

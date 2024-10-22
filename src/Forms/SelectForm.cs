@@ -36,6 +36,26 @@ namespace ScientificReviews.Forms
              
         }
 
+        public void SetSelection(string[] selectedTags)
+        {
+            if (selectedTags != null)
+            {
+                for (int i = 0; i < checkedListBox1.Items.Count; i++)
+                {
+                    string item = checkedListBox1.Items[i].ToString();
+
+                    if (selectedTags.Contains(item))
+                    {
+                        checkedListBox1.SetItemChecked(i, true);
+                    }
+                    else
+                    {
+                        checkedListBox1.SetItemChecked(i, false);
+                    }
+                }
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
@@ -47,5 +67,7 @@ namespace ScientificReviews.Forms
             DialogResult = DialogResult.Cancel;
             this.Close();
         }
+
+        
     }
 }

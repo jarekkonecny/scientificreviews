@@ -36,6 +36,9 @@
     <ApplicationIcon>education.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -55,6 +58,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\CustomClass.cs" />
+    <Compile Include="JCR\Dto\JournalReportsDto.cs" />
+    <Compile Include="JCR\Dto\JournalsListDto.cs" />
+    <Compile Include="JCR\JcrApliClient.cs" />
+    <Compile Include="Settings\AppSettingsData.cs" />
     <Compile Include="Bibtex\BibtexEntry.cs" />
     <Compile Include="Bibtex\BibtexExporter.cs" />
     <Compile Include="Bibtex\BibtexParser.cs" />
@@ -79,8 +87,13 @@
     <Compile Include="Forms\SelectForm.Designer.cs">
       <DependentUpon>SelectForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Logs\AppLog.cs" />
+    <Compile Include="Logs\ErrLog.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings\AppSettingsJson.cs" />
+    <Compile Include="Settings\JournalsDatabase.cs" />
+    <Compile Include="Settings\JsonDatabase.cs" />
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -107,6 +120,7 @@
     <None Include="DataSets\BibtexDataSet.xss">
       <DependentUpon>BibtexDataSet.xsd</DependentUpon>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
