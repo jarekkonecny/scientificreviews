@@ -33,6 +33,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.projectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadBibTexFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadBibTexFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createEntryKeysToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeDuplicitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,6 +48,7 @@
             this.journalCitationReportsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateJournalsDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createExtraJCRTagsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeQ3Q4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -86,7 +88,8 @@
             // projectToolStripMenuItem
             // 
             this.projectToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadBibTexFolderToolStripMenuItem});
+            this.loadBibTexFolderToolStripMenuItem,
+            this.loadBibTexFileToolStripMenuItem});
             this.projectToolStripMenuItem.Name = "projectToolStripMenuItem";
             this.projectToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.projectToolStripMenuItem.Text = "Project";
@@ -97,6 +100,13 @@
             this.loadBibTexFolderToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.loadBibTexFolderToolStripMenuItem.Text = "Load BibTex folder";
             this.loadBibTexFolderToolStripMenuItem.Click += new System.EventHandler(this.loadBibTexFolderToolStripMenuItem_Click);
+            // 
+            // loadBibTexFileToolStripMenuItem
+            // 
+            this.loadBibTexFileToolStripMenuItem.Name = "loadBibTexFileToolStripMenuItem";
+            this.loadBibTexFileToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.loadBibTexFileToolStripMenuItem.Text = "Load BibTex file";
+            this.loadBibTexFileToolStripMenuItem.Click += new System.EventHandler(this.loadBibTexFileToolStripMenuItem_Click);
             // 
             // databaseToolStripMenuItem
             // 
@@ -187,7 +197,8 @@
             // 
             this.journalCitationReportsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.updateJournalsDatabaseToolStripMenuItem,
-            this.createExtraJCRTagsToolStripMenuItem});
+            this.createExtraJCRTagsToolStripMenuItem,
+            this.removeQ3Q4ToolStripMenuItem});
             this.journalCitationReportsToolStripMenuItem.Name = "journalCitationReportsToolStripMenuItem";
             this.journalCitationReportsToolStripMenuItem.Size = new System.Drawing.Size(145, 20);
             this.journalCitationReportsToolStripMenuItem.Text = "Journal Citation Reports";
@@ -205,6 +216,13 @@
             this.createExtraJCRTagsToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.createExtraJCRTagsToolStripMenuItem.Text = "Create extra JCR tags";
             this.createExtraJCRTagsToolStripMenuItem.Click += new System.EventHandler(this.createExtraJCRTagsToolStripMenuItem_Click);
+            // 
+            // removeQ3Q4ToolStripMenuItem
+            // 
+            this.removeQ3Q4ToolStripMenuItem.Name = "removeQ3Q4ToolStripMenuItem";
+            this.removeQ3Q4ToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.removeQ3Q4ToolStripMenuItem.Text = "Remove Q3 Q4";
+            this.removeQ3Q4ToolStripMenuItem.Click += new System.EventHandler(this.removeQ3Q4ToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -410,5 +428,7 @@
         private System.Windows.Forms.ToolStripMenuItem journalCitationReportsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem updateJournalsDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createExtraJCRTagsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeQ3Q4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadBibTexFileToolStripMenuItem;
     }
 }

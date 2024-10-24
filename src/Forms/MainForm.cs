@@ -308,11 +308,10 @@ namespace ScientificReviews.Forms
         private async void updateJournalsDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
-            {
+            {                
                 int year = 2023; // TODO Set year
 
                 lblStatus.Text = "Updating database...";
-
                 // Find journals, that missing information about quartiles
                 JcrApiClient jcrApiClient = new JcrApiClient(Program.AppSettings.Data.JcrApiKey);
                 List<string> missingJournals = new List<string>();
@@ -326,26 +325,45 @@ namespace ScientificReviews.Forms
 
                         if (dic.Keys.Contains(journalName) == false)
                         {
-                            missingJournals.Add(journalName);
+                            if (missingJournals.Contains(journalName) == false)
+                                missingJournals.Add(journalName);
                         }
                     }
                 }
                 missingJournals.Sort();
-
+                
                 foreach (string missingJournal in missingJournals)
                 {
                     lblStatus.Text = $"Updating database... ({missingJournal})";
                     // Get journals by name
-                    var resp =  await jcrApiClient.GetJournalsAsync(missingJournal);
+                    var resp = await jcrApiClient.GetJournalsAsync(missingJournal.Replace("&", "").Replace("-", " "));
                     foreach (var hit in resp.Hits)
                     {
-                        // Get journal reports
-                        var report = await jcrApiClient.GetJournalReportsAsync(hit.Id, year);
-                        journalReports.Add(report);
+                        try
+                        {
+                            // Get journal reports
+                            var report = await jcrApiClient.GetJournalReportsAsync(hit.Id, year);
+
+                            var dicTmp = journalReports.ToDictionary(rep => rep.Journal.Name.ToLower());
+                            if (dicTmp.ContainsKey(report.Journal.Name.ToLower()) == false)
+                            {
+                                journalReports.Add(report);
+                            }
+                            else
+                            {
+
+                            }
+
+                            Program.JournalsDatabase.Save();
+                        }
+                        catch(Exception ex)
+                        {
+                            lblStatus.Text = ex.Message;
+                        }
+
                     } 
 
-                }
-                Program.JournalsDatabase.Save();
+                }                
                 lblStatus.Text = "Journal database updated.";
             }
             catch (Exception ex)
@@ -354,6 +372,7 @@ namespace ScientificReviews.Forms
             }
 
         }
+     
 
         private void createExtraJCRTagsToolStripMenuItem_Click(object sender, EventArgs e)
         {            
@@ -371,19 +390,225 @@ namespace ScientificReviews.Forms
                         var list = entry.Tags.ToList();
 
                         // Calc average percentile JIF
-                        int percentile = 0;
+                        double percentile = 0;
                         foreach (var jif in report.Ranks.Jif) {
                             percentile += jif.JifPercentile;
                         }
                         percentile = percentile / report.Ranks.Jif.Count;
 
-                        list.Add(new BibtexTag("jif", percentile.ToString()));
-                        list.Add(new BibtexTag("jif_" + report.Year.ToString(), percentile.ToString()));
+                        entry.RemoveIfExists("jif");
+                        entry.RemoveIfExists("jif_" + report.Year.ToString());
+
+                        list.Add(new BibtexTag("jif", percentile.ToString(CultureInfo.InvariantCulture)));
+                        list.Add(new BibtexTag("jif_" + report.Year.ToString(), percentile.ToString(CultureInfo.InvariantCulture)));                        
                         entry.Tags = list.ToArray();
                     }
                 }
             }
         }
+
+        private async void loadBibTexFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenFileDialog ofd = new OpenFileDialog()
+                {
+                    CheckPathExists = true,
+                    CheckFileExists = true,
+                    Filter = "Bibtex database *.bib|*.bib"
+                };
+                if (ofd.ShowDialog(this) == DialogResult.OK)
+                {
+                    string fileName = ofd.FileName;
+                    await Task.Run(() =>
+                    {
+                        entries = new List<BibtexEntry>();
+                        BibtexParser parser = new BibtexParser();
+                        entries.AddRange(parser.ParseFile(File.ReadAllText(fileName)));
+                    });
+                    LoadData(entries.ToArray());
+                }
+                lblStatus.Text = "Loaded.";
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = ex.Message;
+            }
+        }
+
+        private void removeQ3Q4ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<BibtexEntry> list = new List<BibtexEntry>();
+            foreach (var entry in entries)
+            {
+                string jif = entry.GetTagValue("jif");
+                if (jif == null) continue;
+                double jifVal = double.Parse(jif, CultureInfo.InvariantCulture);
+                if (jifVal >= 50)
+                {
+                    list.Add(entry);
+                }
+
+            }
+            entries = list;
+            LoadData(entries.ToArray());
+        }
+
+        private void manualJCRDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //try
+            //{
+            //    OpenFileDialog dlg = new OpenFileDialog()
+            //    {
+            //        CheckFileExists = true,
+            //        CheckPathExists = true,
+            //        Filter = "CSV Files *.csv|*.csv"
+            //    };
+            //    if (dlg.ShowDialog(this) == DialogResult.OK)
+            //    {
+            //        string fileName = dlg.FileName;
+
+            //        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            //        {
+            //            BadDataFound = null // Ignorování špatných dat
+            //        };
+
+            //        using (var reader = new StreamReader(fileName))
+            //        using (var csv = new CsvReader(reader, config))
+            //        {                        
+            //            // Načtení záznamů z CSV do seznamu
+            //            var records = csv.GetRecords<JCRCsvDto>();
+                        
+            //            // Zobrazení načtených záznamů
+            //            foreach (var record in records)
+            //            {
+            //                try
+            //                {
+            //                    JournalReportsDto journalReportsDto = ConvertJCRCsvDtoToJournalReportsDto(record);
+            //                    Program.JournalsDatabase.Data.JournalReports.Add(journalReportsDto);
+            //                }
+            //                catch (Exception)
+            //                {
+                                
+            //                }
+
+                            
+            //            }
+            //        }
+            //    }
+            //    ConsolidateDb();
+            //    Program.JournalsDatabase.Save();
+            //    lblStatus.Text = "CSV imported";
+            //}
+            //catch (Exception ex)
+            //{
+            //    lblStatus.Text = ex.Message;
+            //}
+     
+        }
+
+        //private void ConsolidateDb()
+        //{
+        //    var journalReports = Program.JournalsDatabase.Data.JournalReports;
+        //    foreach (var item1 in journalReports)
+        //    {
+        //        foreach (var item2 in journalReports)
+        //        {
+        //            if (item1 != item2)
+        //            {
+        //                if (item1.Journal.Name.ToLower() == item2.Journal.Name.ToLower())
+        //                {
+        //                    Merge(item1.Ranks.Jif.ToArray(), item2.Ranks.Jif.ToArray());
+        //                }
+        //            }
+        //        }
+        //    }
+        //    Dictionary<string, JournalReportsDto> journals = new Dictionary<string, JournalReportsDto>();
+        //    foreach (var item in journalReports)
+        //    {
+        //        if (journals.ContainsKey(item.Journal.Name) == false)
+        //        {
+        //            journals.Add(item.Journal.Name, item);
+        //        }
+        //    }
+        //    Program.JournalsDatabase.Data.JournalReports = journals.Values.ToList();
+        //}
+
+        //private List<JifRankDetailDto> Merge(JifRankDetailDto[] entry1, JifRankDetailDto[] entry2)
+        //{
+        //    List<JifRankDetailDto> mergedTags = entry1.ToList();
+        //    Dictionary<string, JifRankDetailDto> tagsDictionary = mergedTags.ToDictionary(tag => tag.Category);
+
+        //    foreach (var tag in entry2)
+        //    {
+        //        if (!tagsDictionary.ContainsKey(tag.Category))
+        //        {
+        //            mergedTags.Add(tag);
+        //        }
+        //    }
+        //    return mergedTags;
+        //}
+
+        //public static JournalReportsDto ConvertJCRCsvDtoToJournalReportsDto(JCRCsvDto csvDto)
+        //{
+        //    var journalReportsDto = new JournalReportsDto
+        //    {
+        //        Year = 2023, // Předpokládáme, že jde o rok 2023
+        //        Suppressed = false, // Předpokládáme, že data nejsou potlačená
+        //        Journal = new JournalDto
+        //        {
+        //            Name = csvDto.JournalName
+        //        },
+        //        Metrics = new MetricsDto
+        //        {
+        //            ImpactMetrics = new ImpactMetricsDto
+        //            {
+        //                TotalCites = int.TryParse(csvDto.TotalCitations, out var totalCites) ? totalCites : 0,
+        //                Jif = csvDto.Jif2023,
+        //                Jci = int.TryParse(csvDto.Jci2023, out var jci) ? jci : 0
+        //            },
+        //            SourceMetrics = new SourceMetricsDto
+        //            {
+        //                JifPercentile = int.TryParse(csvDto.JifPercentile, out var jifPercentile) ? jifPercentile : 0,
+        //                CitableItems = new CitableItemsDto
+        //                {
+        //                    ArticlesPercentage = int.TryParse(csvDto.PercentCitableOA, out var percentCitableOA) ? percentCitableOA : 0
+        //                }
+        //            }
+        //        },
+        //        Ranks = new RanksDto
+        //        {
+        //                Jif = new List<JifRankDetailDto>
+        //        {
+        //            new JifRankDetailDto
+        //            {
+        //                Category = csvDto.Category,
+        //                Edition = csvDto.Edition,
+        //                Quartile = csvDto.JifQuartile,
+        //                JifPercentile = (int)double.Parse( csvDto.JifPercentile, CultureInfo.InvariantCulture),
+                       
+        //            }
+        //        },
+        //                Jci = new List<JciRankDetailDto>
+        //        {
+        //            new JciRankDetailDto
+        //            {
+        //                Category = csvDto.Category,
+        //                Quartile = csvDto.JifQuartile
+        //            }
+        //        }
+        //            },
+        //            JournalData = new JournalDataDto(),
+        //            SourceData = new SourceDataDto(),
+        //            JournalProfile = new JournalProfileDto()
+        //        };
+
+        //    return journalReportsDto;
+        //}
+
+        
+
+       
     }
 }
 

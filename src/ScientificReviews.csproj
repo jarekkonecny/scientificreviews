@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\CustomClass.cs" />
+    <Compile Include="JCR\Dto\JCRCsvDto.cs" />
     <Compile Include="JCR\Dto\JournalReportsDto.cs" />
     <Compile Include="JCR\Dto\JournalsListDto.cs" />
     <Compile Include="JCR\JcrApliClient.cs" />

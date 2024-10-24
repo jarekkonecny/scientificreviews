@@ -57,6 +57,23 @@ namespace ScientificReviews.Bibtex
             }
         }
 
+        internal void RemoveIfExists(string key)
+        {
+            List<BibtexTag> toDelete = new List<BibtexTag>();
+            foreach(var tag in Tags)
+            {
+                if (tag.Key  == key)
+                {
+                    toDelete.Add(tag);
+                }
+            }
+            var list = Tags .ToList();
+            foreach (var tag in toDelete)
+            {
+                list.Remove(tag);
+            }
+            Tags = list.ToArray();
+        }
     }
 
     public class BibtexTag

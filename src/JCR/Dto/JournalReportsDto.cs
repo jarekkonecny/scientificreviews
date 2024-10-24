@@ -38,51 +38,51 @@ namespace ScientificReviews.JCR.Dto
         public int TotalCites { get; set; }
         public string Jif { get; set; }
         public string JifWithoutSelfCitations { get; set; }
-        public int Jif5Years { get; set; }
-        public int ImmediacyIndex { get; set; }
-        public int Jci { get; set; }
+        public double Jif5Years { get; set; }
+        public double ImmediacyIndex { get; set; }
+        public double Jci { get; set; }
     }
 
     public class InfluenceMetricsDto
     {
         public EigenFactorDto EigenFactor { get; set; }
-        public int ArticleInfluence { get; set; }
+        public double ArticleInfluence { get; set; }
     }
 
     public class EigenFactorDto
     {
-        public int Score { get; set; }
-        public int Normalized { get; set; }
+        public double Score { get; set; }
+        public double Normalized { get; set; }
     }
 
     public class SourceMetricsDto
     {
         public CitableItemsDto CitableItems { get; set; }
-        public int JifPercentile { get; set; }
+        public double JifPercentile { get; set; }
         public HalfLifeDto HalfLife { get; set; }
     }
 
     public class CitableItemsDto
     {
         public int Total { get; set; }
-        public int ArticlesPercentage { get; set; }
+        public double ArticlesPercentage { get; set; }
     }
 
     public class HalfLifeDto
     {
-        public int Cited { get; set; }
-        public int Citing { get; set; }
+        public double Cited { get; set; }
+        public double Citing { get; set; }
     }
 
     public class CitationDistributionDto
     {
-        public int ArticleCitationMedian { get; set; }
-        public int ReviewCitationMedian { get; set; }
-        public int UnlinkedCitations { get; set; }
-        public int TimesCited { get; set; }
-        public int Articles { get; set; }
-        public int Reviews { get; set; }
-        public int Other { get; set; }
+        public double ArticleCitationMedian { get; set; }
+        public double ReviewCitationMedian { get; set; }
+        public double UnlinkedCitations { get; set; }
+        public double TimesCited { get; set; }
+        public double Articles { get; set; }
+        public double Reviews { get; set; }
+        public double Other { get; set; }
     }
 
     public class RanksDto
@@ -118,7 +118,7 @@ namespace ScientificReviews.JCR.Dto
         public string Self { get; set; }
         public string Rank { get; set; }
         public string Quartile { get; set; }
-        public int JifPercentile { get; set; }
+        public double JifPercentile { get; set; }
     }
 
     public class JciRankDetailDto
@@ -126,7 +126,7 @@ namespace ScientificReviews.JCR.Dto
         public string Category { get; set; }
         public string Rank { get; set; }
         public string Quartile { get; set; }
-        public int JciPercentile { get; set; }
+        public double JciPercentile { get; set; }
     }
 
     public class JournalDataDto
