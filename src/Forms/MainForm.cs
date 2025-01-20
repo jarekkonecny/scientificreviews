@@ -14,8 +14,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -201,11 +203,21 @@ namespace ScientificReviews.Forms
             {
                 if (bibtexEntryBindingSource.Current!= null)
                 {
+                    int currentIndex = bibtexEntryBindingSource.Position;
+
                     DataRowView drv = bibtexEntryBindingSource.Current as DataRowView;
                     var row = drv.Row as BibtexDataSet.BibtexEntryRow;
                     var entry = row.Entry as BibtexEntry;
                     entries.Remove(entry);
                     LoadData(entries.ToArray());
+
+                    // Nastavení indexu na následující řádek
+                    if (currentIndex >= bibtexEntryBindingSource.Count)
+                    {
+                        // Pokud byl poslední záznam odstraněn, posuňte se na poslední řádek
+                        currentIndex = bibtexEntryBindingSource.Count - 1;
+                    }
+                    bibtexEntryBindingSource.Position = currentIndex;
                 }
             }
         }
@@ -454,58 +466,117 @@ namespace ScientificReviews.Forms
             LoadData(entries.ToArray());
         }
 
-        private void manualJCRDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        private void databaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //try
-            //{
-            //    OpenFileDialog dlg = new OpenFileDialog()
-            //    {
-            //        CheckFileExists = true,
-            //        CheckPathExists = true,
-            //        Filter = "CSV Files *.csv|*.csv"
-            //    };
-            //    if (dlg.ShowDialog(this) == DialogResult.OK)
-            //    {
-            //        string fileName = dlg.FileName;
 
-            //        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
-            //        {
-            //            BadDataFound = null // Ignorování špatných dat
-            //        };
-
-            //        using (var reader = new StreamReader(fileName))
-            //        using (var csv = new CsvReader(reader, config))
-            //        {                        
-            //            // Načtení záznamů z CSV do seznamu
-            //            var records = csv.GetRecords<JCRCsvDto>();
-                        
-            //            // Zobrazení načtených záznamů
-            //            foreach (var record in records)
-            //            {
-            //                try
-            //                {
-            //                    JournalReportsDto journalReportsDto = ConvertJCRCsvDtoToJournalReportsDto(record);
-            //                    Program.JournalsDatabase.Data.JournalReports.Add(journalReportsDto);
-            //                }
-            //                catch (Exception)
-            //                {
-                                
-            //                }
-
-                            
-            //            }
-            //        }
-            //    }
-            //    ConsolidateDb();
-            //    Program.JournalsDatabase.Save();
-            //    lblStatus.Text = "CSV imported";
-            //}
-            //catch (Exception ex)
-            //{
-            //    lblStatus.Text = ex.Message;
-            //}
-     
         }
+
+        private async void excludeEntriesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenFileDialog ofd = new OpenFileDialog()
+                {
+                    CheckPathExists = true,
+                    CheckFileExists = true,
+                    Filter = "Bibtex database *.bib|*.bib"
+                };
+                var toExlcude = new List<BibtexEntry>();
+                if (ofd.ShowDialog(this) == DialogResult.OK)
+                {
+                    string fileName = ofd.FileName;
+                    await Task.Run(() =>
+                    {
+                        
+                        BibtexParser parser = new BibtexParser();
+                        toExlcude.AddRange(parser.ParseFile(File.ReadAllText(fileName)));
+                    });
+                   
+                }
+                entries = BibtexUtils.ExcludeEntries(entries, toExlcude);
+                LoadData(entries.ToArray());
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = ex.Message;
+            }
+        }
+
+        private void excludeEntriesByTitleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var frm = InputBoxForm.Show("Zadejte vzor pro filtrování položek:", this);
+            if (frm.DialogResult == DialogResult.OK) {
+                string[] patterns = frm.GetText().Split(',');
+                foreach (string item in patterns)
+                {
+                    string pattern = item.Trim();
+                    pattern = pattern.ToLower();
+                    List<BibtexEntry> filtered = new List<BibtexEntry>();
+                    foreach (BibtexEntry entry in entries)
+                    {
+                        if (entry.GetTagValue("title").ToLower().Contains(pattern) == false)
+                        {
+                            filtered.Add(entry);
+                        }
+                    }
+                    entries = filtered;
+                }                
+                LoadData(entries.ToArray());
+            }
+        }
+
+        //private void manualJCRDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //try
+        //{
+        //    OpenFileDialog dlg = new OpenFileDialog()
+        //    {
+        //        CheckFileExists = true,
+        //        CheckPathExists = true,
+        //        Filter = "CSV Files *.csv|*.csv"
+        //    };
+        //    if (dlg.ShowDialog(this) == DialogResult.OK)
+        //    {
+        //        string fileName = dlg.FileName;
+
+        //        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        //        {
+        //            BadDataFound = null // Ignorování špatných dat
+        //        };
+
+        //        using (var reader = new StreamReader(fileName))
+        //        using (var csv = new CsvReader(reader, config))
+        //        {                        
+        //            // Načtení záznamů z CSV do seznamu
+        //            var records = csv.GetRecords<JCRCsvDto>();
+
+        //            // Zobrazení načtených záznamů
+        //            foreach (var record in records)
+        //            {
+        //                try
+        //                {
+        //                    JournalReportsDto journalReportsDto = ConvertJCRCsvDtoToJournalReportsDto(record);
+        //                    Program.JournalsDatabase.Data.JournalReports.Add(journalReportsDto);
+        //                }
+        //                catch (Exception)
+        //                {
+
+        //                }
+
+
+        //            }
+        //        }
+        //    }
+        //    ConsolidateDb();
+        //    Program.JournalsDatabase.Save();
+        //    lblStatus.Text = "CSV imported";
+        //}
+        //catch (Exception ex)
+        //{
+        //    lblStatus.Text = ex.Message;
+        //}
+
+        //}
 
         //private void ConsolidateDb()
         //{
@@ -586,7 +657,7 @@ namespace ScientificReviews.Forms
         //                Edition = csvDto.Edition,
         //                Quartile = csvDto.JifQuartile,
         //                JifPercentile = (int)double.Parse( csvDto.JifPercentile, CultureInfo.InvariantCulture),
-                       
+
         //            }
         //        },
         //                Jci = new List<JciRankDetailDto>
@@ -606,9 +677,9 @@ namespace ScientificReviews.Forms
         //    return journalReportsDto;
         //}
 
-        
 
-       
+
+
     }
 }
 

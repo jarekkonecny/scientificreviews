@@ -42,6 +42,7 @@
             this.removeTypesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeWithoutDOIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updatePageTagFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.excludeEntriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exportDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportDOIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,6 +66,7 @@
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.panel1 = new System.Windows.Forms.Panel();
             this.splitter2 = new System.Windows.Forms.Splitter();
+            this.excludeEntriesByTitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -118,12 +120,15 @@
             this.removeTypesToolStripMenuItem,
             this.removeWithoutDOIToolStripMenuItem,
             this.updatePageTagFormatToolStripMenuItem,
+            this.excludeEntriesToolStripMenuItem,
+            this.excludeEntriesByTitleToolStripMenuItem,
             this.toolStripMenuItem1,
             this.exportDatabaseToolStripMenuItem,
             this.exportDOIsToolStripMenuItem});
             this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
             this.databaseToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.databaseToolStripMenuItem.Text = "Database";
+            this.databaseToolStripMenuItem.Click += new System.EventHandler(this.databaseToolStripMenuItem_Click);
             // 
             // createEntryKeysToolStripMenuItem
             // 
@@ -173,6 +178,13 @@
             this.updatePageTagFormatToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
             this.updatePageTagFormatToolStripMenuItem.Text = "Update page tag format";
             this.updatePageTagFormatToolStripMenuItem.Click += new System.EventHandler(this.updatePageTagFormatToolStripMenuItem_Click);
+            // 
+            // excludeEntriesToolStripMenuItem
+            // 
+            this.excludeEntriesToolStripMenuItem.Name = "excludeEntriesToolStripMenuItem";
+            this.excludeEntriesToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.excludeEntriesToolStripMenuItem.Text = "Exclude entries";
+            this.excludeEntriesToolStripMenuItem.Click += new System.EventHandler(this.excludeEntriesToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -363,6 +375,13 @@
             this.splitter2.TabIndex = 6;
             this.splitter2.TabStop = false;
             // 
+            // excludeEntriesByTitleToolStripMenuItem
+            // 
+            this.excludeEntriesByTitleToolStripMenuItem.Name = "excludeEntriesByTitleToolStripMenuItem";
+            this.excludeEntriesByTitleToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.excludeEntriesByTitleToolStripMenuItem.Text = "Exclude entries by title";
+            this.excludeEntriesByTitleToolStripMenuItem.Click += new System.EventHandler(this.excludeEntriesByTitleToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -430,5 +449,7 @@
         private System.Windows.Forms.ToolStripMenuItem createExtraJCRTagsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeQ3Q4ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadBibTexFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem excludeEntriesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem excludeEntriesByTitleToolStripMenuItem;
     }
 }

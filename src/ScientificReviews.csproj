@@ -58,6 +58,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\InputBoxForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\InputBoxForm.Designer.cs">
+      <DependentUpon>InputBoxForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\CustomClass.cs" />
     <Compile Include="JCR\Dto\JCRCsvDto.cs" />
     <Compile Include="JCR\Dto\JournalReportsDto.cs" />
@@ -95,6 +101,9 @@
     <Compile Include="Settings\AppSettingsJson.cs" />
     <Compile Include="Settings\JournalsDatabase.cs" />
     <Compile Include="Settings\JsonDatabase.cs" />
+    <EmbeddedResource Include="Forms\InputBoxForm.resx">
+      <DependentUpon>InputBoxForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

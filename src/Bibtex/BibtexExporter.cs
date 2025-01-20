@@ -10,13 +10,24 @@ namespace ScientificReviews.Bibtex
     {
         public string EntryToString(BibtexEntry entry)
         {
-            string ret = $"@{entry.Type}{{{entry.Key},{Environment.NewLine}";
+            //string ret = $"@{entry.Type}{{{entry.Key},{Environment.NewLine}";
+            string ret = $"@{entry.Type}{{ {entry.Key.ToUpper()},{Environment.NewLine}";
+
             foreach (var tag in entry.Tags)
             {
-                ret += $"    {tag.Key} = {{{tag.Value}}}{Environment.NewLine}";
+                //ret += $"    {tag.Key} = {{{tag.Value}}}{Environment.NewLine}";
+                ret += $"{CapitalizeFirstLetter(tag.Key)} = {{{tag.Value}}},{Environment.NewLine}";
             }
             ret += $"}}{Environment.NewLine}{Environment.NewLine}";
             return ret;
+        }
+
+        private string CapitalizeFirstLetter(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            return char.ToUpper(input[0]) + input.Substring(1);
         }
 
         public string EntriesToString(BibtexEntry[] entries)

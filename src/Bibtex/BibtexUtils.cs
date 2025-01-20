@@ -33,6 +33,37 @@ namespace ScientificReviews.Bibtex
             return uniqueEntries;
         }
 
+        public static List<BibtexEntry> ExcludeEntries(List<BibtexEntry> entries, List<BibtexEntry> toExclude)
+        {
+            // Kolekce pro uložení výsledků po vyloučení
+            var afterExclusion = new List<BibtexEntry>();
+
+            // Sada názvů položek, které chceme vyloučit (pro efektivní vyhledávání)
+            var excludedTitles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            // Přidání názvů položek k vyloučení do HashSetu
+            foreach (var exclude in toExclude)
+            {
+                string title = exclude.GetTagValue("title");
+                if (!string.IsNullOrEmpty(title))
+                {
+                    excludedTitles.Add(title);
+                }
+            }
+
+            // Iterace přes vstupní položky a přidání těch, které nejsou ve vyloučených
+            foreach (var entry in entries)
+            {
+                string title = entry.GetTagValue("title");
+                if (!string.IsNullOrEmpty(title) && !excludedTitles.Contains(title))
+                {
+                    afterExclusion.Add(entry);
+                }
+            }
+
+            return afterExclusion;
+        }
+
         private static void Merge(BibtexEntry entry1, BibtexEntry entry2)
         {
             List<BibtexTag> mergedTags = entry1.Tags.ToList();
