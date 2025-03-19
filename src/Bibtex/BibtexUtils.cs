@@ -9,7 +9,35 @@ namespace ScientificReviews.Bibtex
 {
     public class BibtexUtils
     {
+        public static string GetFirstAuthorLastName(string authors)
+        {
+            if (string.IsNullOrWhiteSpace(authors))
+                throw new ArgumentException("Input cannot be null or empty.", nameof(authors));
 
+            // Zkontrolujeme, jestli řetězec obsahuje čárku (naznačuje formát s oddělením příjmení a křestního jména)
+            if (authors.Contains(","))
+            {
+                // Formát s čárkami: "Crespo Márquez, Adolfo; de la Fuente Carmona, Antonio"
+                var firstAuthor = authors.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                if (firstAuthor != null)
+                {
+                    var parts = firstAuthor.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    return parts[0].Trim(); // Vrací příjmení
+                }
+            }
+            else
+            {
+                // Formát bez čárek: "Adolfo Crespo Márquez and Antonio de la Fuente Carmona"
+                var firstAuthor = authors.Split(new[] { " and " }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                if (firstAuthor != null)
+                {
+                    var parts = firstAuthor.Split(' ');
+                    return parts.Last().Trim(); // Vrací poslední slovo jako příjmení
+                }
+            }
+
+            throw new FormatException("Unable to parse the author string. Unsupported format.");
+        }
         public static List<BibtexEntry> RemoveDuplicateEntriesByTag(List<BibtexEntry> entries, string tagName)
         {
             var uniqueEntries = new List<BibtexEntry>();

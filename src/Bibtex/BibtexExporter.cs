@@ -11,7 +11,7 @@ namespace ScientificReviews.Bibtex
         public string EntryToString(BibtexEntry entry)
         {
             //string ret = $"@{entry.Type}{{{entry.Key},{Environment.NewLine}";
-            string ret = $"@{entry.Type}{{ {entry.Key.ToUpper()},{Environment.NewLine}";
+            string ret = $"@{entry.Type}{{ {entry.Key},{Environment.NewLine}";
 
             foreach (var tag in entry.Tags)
             {

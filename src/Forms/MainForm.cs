@@ -96,8 +96,9 @@ namespace ScientificReviews.Forms
             List<string> keys = new List<string>();
             foreach (BibtexEntry entry in entries)
             {
-                string key = entry.GetTagValue("author").Split(',')[0].Trim().Replace(" ", "") +
-                    entry.GetTagValue("year");
+                //string key = entry.GetTagValue("author").Split(',')[0].Trim().Replace(" ", "") + entry.GetTagValue("year");
+
+                string key = BibtexUtils.GetFirstAuthorLastName(entry.GetTagValue("author")).Replace(" ", "") + entry.GetTagValue("year");
                 string myKey = key;
                 int i = 1;
                 while (keys.Contains(myKey))
@@ -106,7 +107,7 @@ namespace ScientificReviews.Forms
                     i++;
                 }
                 entry.Key = myKey;
-                keys.Add(myKey);
+                keys.Add(myKey);                
             }
             LoadData(entries.ToArray());
 
